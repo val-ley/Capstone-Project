@@ -6,6 +6,7 @@ import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.KeyInput;
 import com.jme3.bullet.BulletAppState;
+import com.mygame.RandomSpawn;
 
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -15,8 +16,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 
+
 public class Main extends SimpleApplication implements ActionListener {
 
+    
+  
+    
     private BulletAppState physics;
     private CharacterControl player;
 
@@ -31,6 +36,8 @@ public class Main extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
 
         physics = new BulletAppState();
+        RandomSpawn = new RandomSpawn(assetManager, rootNode);
+        RandomSpawn.createFallingCube();
         stateManager.attach(physics);
 
         flyCam.setMoveSpeed(1);
@@ -57,21 +64,7 @@ public class Main extends SimpleApplication implements ActionListener {
         new Collision(floor, physics, 0); // static
     }
 
-    // ---------- FALLING CUBE ----------
-    private void createFallingCube() {
-        Box box = new Box(1, 1, 1);
-        Geometry cube = new Geometry("Cube", box);
-
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
-        cube.setMaterial(mat);
-
-        cube.setLocalTranslation(0, 30, 0);
-        rootNode.attachChild(cube);
-
-        new Collision(cube, physics, 1); // dynamic
-    }
+   
 
     // ---------- PLAYER ----------
     private void createPlayer() {
