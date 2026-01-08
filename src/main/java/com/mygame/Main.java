@@ -36,9 +36,11 @@ public class Main extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
 
         physics = new BulletAppState();
-        RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode);
-        RandomSpawn.createFallingCube();
         stateManager.attach(physics);
+        
+        RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
+        
+        RandomSpawn.createFallingCube();
 
         flyCam.setMoveSpeed(1);
         setupKeys();
