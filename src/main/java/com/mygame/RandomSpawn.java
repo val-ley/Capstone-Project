@@ -30,8 +30,7 @@ public class RandomSpawn {
             Box box = new Box(1, 1, 1);
             Geometry cube = new Geometry("Cube", box);
 
-            Material mat = new Material(assetManager,
-                    "Common/MatDefs/Misc/Unshaded.j3md");
+            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", ColorRGBA.Red);
             cube.setMaterial(mat);
 

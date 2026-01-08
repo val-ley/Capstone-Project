@@ -36,7 +36,7 @@ public class Main extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
 
         physics = new BulletAppState();
-        RandomSpawn = new RandomSpawn(assetManager, rootNode);
+        RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode);
         RandomSpawn.createFallingCube();
         stateManager.attach(physics);
 
@@ -44,7 +44,6 @@ public class Main extends SimpleApplication implements ActionListener {
         setupKeys();
 
         createFloor();
-        createFallingCube();
         createPlayer();
     }
 
@@ -78,6 +77,21 @@ public class Main extends SimpleApplication implements ActionListener {
 
         physics.getPhysicsSpace().add(player);
     }
+    
+//    public void createFallingCube() {
+//            Box box = new Box(1, 1, 1);
+//            Geometry cube = new Geometry("Cube", box);
+//
+//            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+//            mat.setColor("Color", ColorRGBA.Red);
+//            cube.setMaterial(mat);
+//
+//            cube.setLocalTranslation(0, 30, 0);
+//            rootNode.attachChild(cube);
+//
+//            new Collision(cube, physics, 1); // dynamic
+//    }
+
 
     // ---------- INPUT ----------
     private void setupKeys() {
@@ -90,6 +104,8 @@ public class Main extends SimpleApplication implements ActionListener {
         inputManager.addListener(this,
                 "Left", "Right", "Up", "Down", "Jump");
     }
+    
+    
 
     @Override
     public void onAction(String name, boolean pressed, float tpf) {
