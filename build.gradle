@@ -7,7 +7,7 @@ group 'com.mygame'
 version '1.0'
 
 application {
-    applicationName = 'Cap'
+    applicationName = 'Capstone'
     mainClass = 'com.mygame.Main'
     // Mac OS with LWJGL 3 needs to be started with this JVM argument
     if (System.getProperty("os.name").toLowerCase().contains("mac")) {
@@ -60,16 +60,12 @@ dependencies {
   implementation "org.jmonkeyengine:jme3-plugins:$jmeVer"
   
   // GUI Library
-  implementation "org.jmonkeyengine:jme3-niftygui:$jmeVer"
+  implementation "com.simsilica:lemur:1.16.0"
   
   // Physics Library
   implementation "org.jmonkeyengine:jme3-jbullet:$jmeVer"
-  
-  // Networking Library
-  implementation "org.jmonkeyengine:jme3-networking:$jmeVer"
 
   // Additional Libraries
-  implementation "org.jmonkeyengine:jme3-effects:$jmeVer"
 
   // Assets sub-project
   runtimeOnly project(':assets')
