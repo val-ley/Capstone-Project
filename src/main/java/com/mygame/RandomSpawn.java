@@ -42,7 +42,7 @@ public class RandomSpawn {
         float x = (float)(Math.random() * 50f - 10f); //random generate where the cube is
         float z = (float)(Math.random() * 50f - 10f);
 
-        cube.setLocalTranslation(x, 1, z);
+        cube.setLocalTranslation(x, 50, z);
         rootNode.attachChild(cube);
 
         new Collision(cube, physics, 1); // dynamic

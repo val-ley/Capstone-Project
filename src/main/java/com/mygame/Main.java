@@ -36,7 +36,7 @@ public class Main extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
 
         physics = new BulletAppState();
-        stateManager.attach(physics);
+        stateManager.attach(physics); //create this before attaching the cube
         
         RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
         
