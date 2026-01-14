@@ -7,6 +7,7 @@ import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -25,10 +26,6 @@ public class Main extends SimpleApplication implements ActionListener {
         return hideMenu;
     }
     
-    public boolean throw () {
-        return throwPressed;
-    }
-    
     private BulletAppState physics;
     private CharacterControl player;
 
@@ -43,9 +40,8 @@ public class Main extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
 
         physics = new BulletAppState();
-        stateManager.attach(throwing);
         stateManager.attach(physics); //create this before attaching the cube
-        
+                
         RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
         
         RandomSpawn.createFallingCube();
@@ -60,10 +56,9 @@ public class Main extends SimpleApplication implements ActionListener {
         mainMenu.init();
         
         //throwing box 
-        throwSystem = new Throw(assetManager, rootNode, throwing);
+        throwBox = new Throw(assetManager, rootNode, physics);
 
     }
-    
     
 
     // ---------- FLOOR ----------
@@ -99,6 +94,12 @@ public class Main extends SimpleApplication implements ActionListener {
 
     player.setPhysicsLocation(new Vector3f(3, 5, 0));
     physics.getPhysicsSpace().add(player);
+    
+    
+    /* You must add a light to make the model visible. */
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
+        rootNode.addLight(sun);
 }
 
     
@@ -155,8 +156,8 @@ public class Main extends SimpleApplication implements ActionListener {
         }
         
         //box throw
-        if (name.equals("Throw") && isPressed) {
-            throwSystem.throwBox(cam);
+        if (name.equals("Throw") && pressed) {
+            throwBox.throwBox(cam);
         }
 
     }
@@ -178,6 +179,10 @@ public class Main extends SimpleApplication implements ActionListener {
         player.setWalkDirection(walkDir.mult(0.3f));
 
         cam.setLocation(player.getPhysicsLocation().add(0, 1.5f, 0));
-
+        
+       /* You must add a light to make the model visible. */
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
+        rootNode.addLight(sun);
     }
 }

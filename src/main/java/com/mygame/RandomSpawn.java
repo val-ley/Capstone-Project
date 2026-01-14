@@ -2,6 +2,7 @@ package com.mygame;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -31,6 +32,7 @@ public class RandomSpawn {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Red);
         cube.setMaterial(mat);
+        
         
         ////////////// when adding the actual mesh
         /*        Spatial teapot = assetManager.loadModel("Models/Teapot/Teapot.obj");
