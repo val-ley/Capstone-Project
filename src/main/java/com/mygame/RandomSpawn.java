@@ -47,7 +47,7 @@ public class RandomSpawn {
         
         cube.addControl(new AbstractControl() {
 
-            float timeLeft = 2f; // seconds
+            float timeLeft = 5f; // seconds
 
             @Override
             protected void controlUpdate(float tpf) {

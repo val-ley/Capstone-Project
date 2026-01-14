@@ -69,27 +69,6 @@ public class MainMenu {
                 "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", bgColor);
         background.setMaterial(mat);
-
-        
-        //SCREEN DISSAPHEARS
-        background.addControl(new AbstractControl() {
-
-            float timeLeft = 2f; // seconds
-
-            @Override
-            protected void controlUpdate(float tpf) {
-                timeLeft -= tpf;
-
-                if (timeLeft <= 0f) {
-                    spatial.removeFromParent();
-                }
-            }
-
-            @Override
-            protected void controlRender(
-                    com.jme3.renderer.RenderManager rm,
-        });
-
         
         guiNode.attachChild(background);
 
@@ -102,6 +81,7 @@ public class MainMenu {
         title.setText("DELIVERY GAME");
         title.setSize(font.getCharSet().getRenderedSize() * 4f); //size, idk how to upscale tho
         title.setColor(ColorRGBA.White);
+        
 
         centerText(title, width, height * 0.65f); //so its a bit lower
         guiNode.attachChild(title);
@@ -138,10 +118,59 @@ public class MainMenu {
     private void centerText(BitmapText text, float screenWidth, float y) { //lowkey stolen from tutorials
         float textWidth = text.getLineWidth();
         text.setLocalTranslation(
-                (screenWidth - textWidth) / 2f,
-                y,
-                0
-        );
+                (screenWidth - textWidth) / 2f, y, 0);
     }
+    //SCREEN GOES TRANSPARENT --> cop out cause i cant find how to just remove the guiNode.attachChild(something);
+    private AbstractControl makeDisappearControl() {
+    return new AbstractControl() {
 
+        float timeLeft = 0.5f;
+
+        @Override //same from before
+        protected void controlUpdate(float tpf) {
+            timeLeft -= tpf;
+
+            if (timeLeft <= 0f) {
+                spatial.removeFromParent();
+                spatial.removeControl(this);
+            }
+        }
+
+        @Override
+        protected void controlRender(
+                com.jme3.renderer.RenderManager rm,
+                com.jme3.renderer.ViewPort vp) {}
+    };
+}
+
+public void disappear() {
+
+    // background fade/remove
+    background.addControl(new AbstractControl() {
+
+        float timeLeft = 0.5f;
+
+        @Override
+        protected void controlUpdate(float tpf) {
+            timeLeft -= tpf;
+
+            if (timeLeft <= 0f) {
+                spatial.removeFromParent();
+                spatial.removeControl(this);
+            }
+        }
+
+        @Override
+        protected void controlRender(
+                com.jme3.renderer.RenderManager rm,
+                com.jme3.renderer.ViewPort vp) { }
+    });
+
+    // title
+    title.addControl(makeDisappearControl());
+    start.addControl(makeDisappearControl());
+    quit.addControl(makeDisappearControl());
+}
+
+    
 }

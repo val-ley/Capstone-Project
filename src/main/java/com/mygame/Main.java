@@ -14,17 +14,19 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 
-
-
-
-
 public class Main extends SimpleApplication implements ActionListener {
     
     private MainMenu mainMenu;
     public boolean hideMenu;
     
+    private Throw throwBox;
+    
     public boolean returnHideMenu () {
         return hideMenu;
+    }
+    
+    public boolean throw () {
+        return throwPressed;
     }
     
     private BulletAppState physics;
@@ -41,6 +43,7 @@ public class Main extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
 
         physics = new BulletAppState();
+        stateManager.attach(throwing);
         stateManager.attach(physics); //create this before attaching the cube
         
         RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
@@ -55,6 +58,9 @@ public class Main extends SimpleApplication implements ActionListener {
         //Main menu stuff
         mainMenu = new MainMenu(this);
         mainMenu.init();
+        
+        //throwing box 
+        throwSystem = new Throw(assetManager, rootNode, throwing);
 
     }
     
@@ -121,6 +127,9 @@ public class Main extends SimpleApplication implements ActionListener {
         
         inputManager.addMapping("MenuStart", new KeyTrigger(KeyInput.KEY_RETURN));
         inputManager.addListener(this, "MenuStart");
+        
+        inputManager.addMapping("Throw", new KeyTrigger(KeyInput.KEY_E));
+        inputManager.addListener(this, "Throw");
 
 
         inputManager.addListener(this,
@@ -139,12 +148,17 @@ public class Main extends SimpleApplication implements ActionListener {
         if (name.equals("Jump")) jump = pressed;
         
         
-        
+        //start of the game
         if (name.equals("MenuStart") && pressed) {
-            // Change background color to green when ENTER is pressed
-            ColorRGBA transparent = new ColorRGBA(255.0f, 0.0f, 0.0f, 0.0f);
+            mainMenu.disappear();
             hideMenu = true;
         }
+        
+        //box throw
+        if (name.equals("Throw") && isPressed) {
+            throwSystem.throwBox(cam);
+        }
+
     }
     
     // ---------- UPDATE ----------
@@ -164,5 +178,6 @@ public class Main extends SimpleApplication implements ActionListener {
         player.setWalkDirection(walkDir.mult(0.3f));
 
         cam.setLocation(player.getPhysicsLocation().add(0, 1.5f, 0));
+
     }
 }
