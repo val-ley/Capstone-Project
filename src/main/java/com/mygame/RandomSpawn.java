@@ -2,7 +2,6 @@ package com.mygame;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -17,60 +16,54 @@ public class RandomSpawn {
     private final Node rootNode;
     private final BulletAppState physics;
 
+    // Predefined spawn points
+    private final Vector3f[] spawnPoints = {
+        new Vector3f(0, 5, 0),
+        new Vector3f(5, 5, 5),
+        new Vector3f(-5, 5, 10),
+        new Vector3f(10, 5, -5)
+    };
+    
     public RandomSpawn(AssetManager assetManager, Node rootNode, BulletAppState physics) {
-        this.assetManager = assetManager; // 
+        this.assetManager = assetManager;
         this.rootNode = rootNode;
         this.physics = physics;
     }
 
-    //   CUBE 
     public void createRandomSpawn() {
-        Box box = new Box(1, 1, 1);
-        Geometry cube = new Geometry("Cube", box); // need to change to a circle?maybe use particles or dont use physics
-                                                   //change geometry to the othe rone.
+        // Pick a random spawn point
+        Vector3f point = spawnPoints[(int) (Math.random() * spawnPoints.length)];
+
+        // Create cube
+        Box box = new Box(1, 1, 1); // smaller and easier to see
+        Geometry cube = new Geometry("Cube", box);
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", new ColorRGBA(0f,0f,0f,0f));
+        mat.setColor("Color", ColorRGBA.White); // visible
         cube.setMaterial(mat);
-        
-        
-        ////////////// when adding the actual mesh
-        /*        Spatial teapot = assetManager.loadModel("Models/Teapot/Teapot.obj");
-        Material mat_default = new Material(assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
-        teapot.setMaterial(mat_default);
-        rootNode.attachChild(teapot);
-        */
 
-        // random 
-        float x = (float)(Math.random() * 50f - 10f); //random generate where the cube is
-        float z = (float)(Math.random() * 50f - 10f);
+        cube.setLocalTranslation(point);
 
-        cube.setLocalTranslation(x, 1, z);
-        
+        // Remove cube after 5 seconds
         cube.addControl(new AbstractControl() {
-
-            float timeLeft = 5f; // s
+            float timeLeft = 5f;
 
             @Override
             protected void controlUpdate(float tpf) {
                 timeLeft -= tpf;
-
                 if (timeLeft <= 0f) {
                     spatial.removeFromParent();
                 }
             }
 
             @Override
-            protected void controlRender(
-                    com.jme3.renderer.RenderManager rm,
-                    com.jme3.renderer.ViewPort vp) {
-                // nmot used
+            protected void controlRender(com.jme3.renderer.RenderManager rm,
+                                         com.jme3.renderer.ViewPort vp) {
             }
         });
-        
-        
+
         rootNode.attachChild(cube);
 
-        new Collision(cube, physics, 1); 
+        new Collision(cube, physics, 1);
     }
 }

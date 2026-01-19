@@ -7,13 +7,18 @@ import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.shadow.EdgeFilteringMode;
 
 public class Main extends SimpleApplication implements ActionListener {
     
@@ -59,11 +64,6 @@ public class Main extends SimpleApplication implements ActionListener {
         
         //throwing box 
         throwBox = new Throw(assetManager, rootNode, physics);
-        
-        /* You must add a light to make the model visible. */
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
-        rootNode.addLight(sun);
     }
     
     //  TEST 
@@ -76,19 +76,31 @@ public class Main extends SimpleApplication implements ActionListener {
 
     //  FLOOR 
     private void createFloor() {
-        Box floorBox = new Box(200, 1, 200);
-        Geometry floor = new Geometry("Floor", floorBox);
+     Spatial city = assetManager.loadModel("Scenes/houseblock.glb");
+        
+        city.setLocalTranslation(0, -20, 0);
+        rootNode.attachChild(city);
 
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Gray);
-        floor.setMaterial(mat);
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.5f, -1f, -0.5f).normalizeLocal());
+        sun.setColor(ColorRGBA.White);
+        
+        rootNode.addLight(sun);
 
-        floor.setLocalTranslation(0, -1, 0);
-        rootNode.attachChild(floor);
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 1024, 3);
+        dlsr.setLight(sun);
+        dlsr.setShadowIntensity(0.7f); //main shadows from main sun
+        viewPort.addProcessor(dlsr);
 
-        new Collision(floor, physics, 0);
-    }
+        DirectionalLight fillLight = new DirectionalLight();
+        fillLight.setDirection(new Vector3f(0.5f, -0.3f, 0.5f).normalizeLocal()); // opposite side from sun #1
+        fillLight.setColor(ColorRGBA.White.mult(0.15f)); // makes shadows not 100% pitch black
+        rootNode.addLight(fillLight);
+        
+        city.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+        
+        new Collision(city, physics, 0); 
+}
 
    
 
@@ -111,20 +123,6 @@ public class Main extends SimpleApplication implements ActionListener {
    
 }
 
-    
-//    public void createFallingCube() {
-//            Box box = new Box(1, 1, 1);
-//            Geometry cube = new Geometry("Cube", box);
-//
-//            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-//            mat.setColor("Color", ColorRGBA.Red);
-//            cube.setMaterial(mat);
-//
-//            cube.setLocalTranslation(0, 30, 0);
-//            rootNode.attachChild(cube);
-//
-//            new Collision(cube, physics, 1); // dynamic
-//    }
 
 
     //  INPUT 
