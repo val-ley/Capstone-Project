@@ -105,16 +105,16 @@ public class MainMenu {
         guiNode.attachChild(quit);
     }
 
-    // CHANGE BG COLOR 
-    public void changeColor(ColorRGBA newColor) {
-        bgColor = newColor;
-        background.getMaterial().setColor("Color", bgColor);
-        colorChanged = true;
-    }
+//    // CHANGE BG COLOR 
+//    public void changeColor(ColorRGBA newColor) {
+//        bgColor = newColor;
+//        background.getMaterial().setColor("Color", bgColor);
+//        colorChanged = true;
+//    }
 
-    public boolean isColorChanged() {
-        return colorChanged;
-    }
+//    public boolean isColorChanged() {
+//        return colorChanged;
+//    }
     private void centerText(BitmapText text, float screenWidth, float y) { //lowkey stolen from tutorials
         float textWidth = text.getLineWidth();
         text.setLocalTranslation(
@@ -145,7 +145,7 @@ public class MainMenu {
 
 public void disappear() {
 
-    // background fade/remove
+    // background fade
     background.addControl(new AbstractControl() {
 
         float timeLeft = 0.5f;

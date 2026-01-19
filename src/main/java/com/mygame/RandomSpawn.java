@@ -18,19 +18,19 @@ public class RandomSpawn {
     private final BulletAppState physics;
 
     public RandomSpawn(AssetManager assetManager, Node rootNode, BulletAppState physics) {
-        this.assetManager = assetManager; // store reference
+        this.assetManager = assetManager; // 
         this.rootNode = rootNode;
         this.physics = physics;
     }
 
-    // ---------- FALLING CUBE ----------
-    public void createFallingCube() {
+    //   CUBE 
+    public void createRandomSpawn() {
         Box box = new Box(1, 1, 1);
         Geometry cube = new Geometry("Cube", box); // need to change to a circle?maybe use particles or dont use physics
                                                    //change geometry to the othe rone.
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Red);
+        mat.setColor("Color", new ColorRGBA(0f,0f,0f,0f));
         cube.setMaterial(mat);
         
         
@@ -41,7 +41,7 @@ public class RandomSpawn {
         rootNode.attachChild(teapot);
         */
 
-        // random X/Z spawn
+        // random 
         float x = (float)(Math.random() * 50f - 10f); //random generate where the cube is
         float z = (float)(Math.random() * 50f - 10f);
 
@@ -49,7 +49,7 @@ public class RandomSpawn {
         
         cube.addControl(new AbstractControl() {
 
-            float timeLeft = 5f; // seconds
+            float timeLeft = 5f; // s
 
             @Override
             protected void controlUpdate(float tpf) {
@@ -64,13 +64,13 @@ public class RandomSpawn {
             protected void controlRender(
                     com.jme3.renderer.RenderManager rm,
                     com.jme3.renderer.ViewPort vp) {
-                // Not used
+                // nmot used
             }
         });
         
         
         rootNode.attachChild(cube);
 
-        new Collision(cube, physics, 1); // dynamic
+        new Collision(cube, physics, 1); 
     }
 }

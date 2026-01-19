@@ -15,11 +15,11 @@ public class Collision {
         CollisionShape shape;
 
         if (mass == 0) {
-            // Static object (floor, wall)
+            // static
             shape = CollisionShapeFactory.createMeshShape(spatial);
         } else {
-            // Dynamic object (cube, props)
-            shape = CollisionShapeFactory.createDynamicMeshShape(spatial);
+            // dynamic
+            shape = CollisionShapeFactory.createDynamicMeshShape(spatial); //when attachintng leave blank the areas
         }
 
         body = new RigidBodyControl(shape, mass);

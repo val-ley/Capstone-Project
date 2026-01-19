@@ -44,24 +44,37 @@ public class Main extends SimpleApplication implements ActionListener {
                 
         RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
         
-        RandomSpawn.createFallingCube();
+        RandomSpawn.createRandomSpawn();
 
         flyCam.setMoveSpeed(1);
         setupKeys();
 
         createFloor();
         createPlayer();
+        
+        //test();
         //Main menu stuff
         mainMenu = new MainMenu(this);
         mainMenu.init();
         
         //throwing box 
         throwBox = new Throw(assetManager, rootNode, physics);
-
+        
+        /* You must add a light to make the model visible. */
+        DirectionalLight sun = new DirectionalLight();
+        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
+        rootNode.addLight(sun);
     }
     
+    //  TEST 
+//   private void test() {
+//        Spatial boxtest = assetManager.loadModel("Models/deliverybox.glb");
+//        Material mat_default = new Material( assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
+//        boxtest.setMaterial(mat_default);
+//        rootNode.attachChild(boxtest);
+//    }
 
-    // ---------- FLOOR ----------
+    //  FLOOR 
     private void createFloor() {
         Box floorBox = new Box(200, 1, 200);
         Geometry floor = new Geometry("Floor", floorBox);
@@ -74,12 +87,12 @@ public class Main extends SimpleApplication implements ActionListener {
         floor.setLocalTranslation(0, -1, 0);
         rootNode.attachChild(floor);
 
-        new Collision(floor, physics, 0); // static
+        new Collision(floor, physics, 0);
     }
 
    
 
-    // ---------- PLAYER ----------
+    //  PLAYER HITBOX
     private void createPlayer() {
     CapsuleCollisionShape shape =
             new CapsuleCollisionShape(0.5f, 1.8f);
@@ -95,11 +108,7 @@ public class Main extends SimpleApplication implements ActionListener {
     player.setPhysicsLocation(new Vector3f(3, 5, 0));
     physics.getPhysicsSpace().add(player);
     
-    
-    /* You must add a light to make the model visible. */
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
-        rootNode.addLight(sun);
+   
 }
 
     
@@ -118,7 +127,7 @@ public class Main extends SimpleApplication implements ActionListener {
 //    }
 
 
-    // ---------- INPUT ----------
+    //  INPUT 
     private void setupKeys() {
         inputManager.addMapping("Left",  new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
@@ -162,7 +171,7 @@ public class Main extends SimpleApplication implements ActionListener {
 
     }
     
-    // ---------- UPDATE ----------
+    // REFRESH
     @Override
     public void simpleUpdate(float tpf) {
 
@@ -180,9 +189,5 @@ public class Main extends SimpleApplication implements ActionListener {
 
         cam.setLocation(player.getPhysicsLocation().add(0, 1.5f, 0));
         
-       /* You must add a light to make the model visible. */
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f).normalizeLocal());
-        rootNode.addLight(sun);
     }
 }
