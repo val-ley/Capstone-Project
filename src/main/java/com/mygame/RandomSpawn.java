@@ -35,15 +35,13 @@ public class RandomSpawn {
         Vector3f point = spawnPoints[(int) (Math.random() * spawnPoints.length)];
 
         // Create cube
-        Spatial cube = assetManager.loadModel("Models/circle-ed.glb");
-        Material mat_default = new Material( assetManager, "Textures/circle-sheet.png");
-        cube.setMaterial(mat_default);
-        rootNode.attachChild(cube);
+        Spatial circle = assetManager.loadModel("Models/circle-3d.glb");
+        rootNode.attachChild(circle);
 
-        cube.setLocalTranslation(point);
+        circle.setLocalTranslation(0.0f, 0.0f, 0.0f);
 
         // Remove cube after 5 seconds
-        cube.addControl(new AbstractControl() {
+        circle.addControl(new AbstractControl() {
             float timeLeft = 5f;
 
             @Override
@@ -60,8 +58,8 @@ public class RandomSpawn {
             }
         });
 
-        rootNode.attachChild(cube);
+        rootNode.attachChild(circle);
 
-        new Collision(cube, physics, 1);
+        new Collision(circle, physics, 1);
     }
 }

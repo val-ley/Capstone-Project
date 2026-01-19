@@ -41,6 +41,7 @@ public class Throw {
     mat.setBoolean("UseMaterialColors", true);
     mat.setColor("Diffuse", com.jme3.math.ColorRGBA.White);
     mat.setColor("Specular", com.jme3.math.ColorRGBA.Black);
+    
 
     // APPLY MATERIAL TO ALL GEOMETRIES
     box.depthFirstTraversal(spatial -> {

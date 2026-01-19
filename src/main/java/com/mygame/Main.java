@@ -55,7 +55,7 @@ public class Main extends SimpleApplication implements ActionListener {
         setupKeys();
 
         createFloor();
-        createPlayer();
+       createPlayer();
         
         //test();
         //Main menu stuff
@@ -64,6 +64,8 @@ public class Main extends SimpleApplication implements ActionListener {
         
         //throwing box 
         throwBox = new Throw(assetManager, rootNode, physics);
+        
+        
     }
     
     //  TEST 
@@ -76,9 +78,19 @@ public class Main extends SimpleApplication implements ActionListener {
 
     //  FLOOR 
     private void createFloor() {
+         //////// //////// //////// //////// ////////
+//        Box floor = new Box(100, 1, 100); // create cube shape
+//        Geometry floors = new Geometry("Floor", floor);  // create cube geometry from the shape
+//        Material mat = new Material(assetManager,
+//          "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
+//        mat.setColor("Color", ColorRGBA.White);   // set color of material to blue
+//        floors.setMaterial(mat);                   // set the cube's material
+//        rootNode.attachChild(floors);              //
+        
+        //////// //////// //////// //////// ////////
      Spatial city = assetManager.loadModel("Scenes/houseblock.glb");
         
-        city.setLocalTranslation(0, -20, 0);
+        city.setLocalTranslation(0, -1, 0);
         rootNode.attachChild(city);
 
         DirectionalLight sun = new DirectionalLight();
@@ -117,7 +129,7 @@ public class Main extends SimpleApplication implements ActionListener {
     playerNode.addControl(player);
     rootNode.attachChild(playerNode);
 
-    player.setPhysicsLocation(new Vector3f(3, 5, 0));
+    player.setPhysicsLocation(new Vector3f(1, 1, 0));
     physics.getPhysicsSpace().add(player);
     
    

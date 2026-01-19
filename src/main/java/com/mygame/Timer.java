@@ -1,13 +1,63 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mygame;
-
-/**
- *
- * @author valley
- */
-public class Timer {
-    
-}
+//package com.mygame;
+//
+//import com.jme3.app.Application;
+//import com.jme3.font.BitmapText;
+//import com.jme3.font.BitmapFont;
+//import com.jme3.scene.Node;
+//
+//public class Timer {
+//
+//    private final Application app;
+//    private final Node guiNode;
+//
+//    private BitmapText timerText;
+//    private float timeSeconds = 0f;
+//    private int timeInt = 0;
+//
+//    public boolean endGame = false;     // to stop timer
+//    private boolean hidden = false;
+//
+//    public Timer(Application app, Node guiNode) {
+//        this.app = app;
+//        this.guiNode = guiNode;
+//        init();
+//    }
+//
+//    private void init() {
+//        //strart 
+//        BitmapFont guiFont = app.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
+//
+//        timerText = new BitmapText(guiFont);
+//        timerText.setSize(guiFont.getCharSet().getRenderedSize() * 2);
+//        timerText.setLocalTranslation(500, timerText.getLineHeight(), 0);
+//
+//        guiNode.attachChild(timerText);
+//    }
+//
+//    public void update(float tpf) {
+//
+//        // If players time runs out --> trigger next event which is end screen
+//        if (endGame) {
+//
+//            if (!hidden) {
+//                guiNode.detachChild(timerText);  // Hide 
+//                hidden = true;
+//            }
+//
+//            return;   // Stop the timer
+//        }
+//
+//        // timer 
+//        timeSeconds += tpf;
+//
+//        if (timeSeconds >= 1f) {
+//            timeInt++;
+//            timerText.setText("Time: " + timeInt);
+//            timeSeconds = 0f;
+//        }
+//    }
+//
+//    public int getTime() {
+//        return timeInt;
+//    }
+//}
