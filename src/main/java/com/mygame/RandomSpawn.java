@@ -5,7 +5,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Box;
@@ -35,12 +35,10 @@ public class RandomSpawn {
         Vector3f point = spawnPoints[(int) (Math.random() * spawnPoints.length)];
 
         // Create cube
-        Box box = new Box(1, 1, 1); // smaller and easier to see
-        Geometry cube = new Geometry("Cube", box);
-
-        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.White); // visible
-        cube.setMaterial(mat);
+        Spatial cube = assetManager.loadModel("Models/circle-ed.glb");
+        Material mat_default = new Material( assetManager, "Textures/circle-sheet.png");
+        cube.setMaterial(mat_default);
+        rootNode.attachChild(cube);
 
         cube.setLocalTranslation(point);
 
