@@ -1,5 +1,7 @@
 package com.mygame;
 
+import com.mygame.Main;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -17,7 +19,8 @@ import com.jme3.input.controls.ActionListener;
 
 public class MainMenu {
 
-    private final SimpleApplication app;
+    private final Main app;
+    
     private final Node guiNode;
 
     //for buttons
@@ -35,7 +38,7 @@ public class MainMenu {
     private Geometry background;
     private BitmapText title, start, quit;
 
-    public MainMenu(SimpleApplication app) {
+    public MainMenu(Main app) {
         this.app = app;
         this.guiNode = app.getGuiNode();
     }
@@ -136,7 +139,7 @@ public class MainMenu {
 
                 //check each button
                 if (isMouseOverButton(playButton, mouse)) {
-                    startGame();
+                    clickStartGame();
                 } else if (isMouseOverButton(settingsButton, mouse)) {
                     openSettings();
                 } else if (isMouseOverButton(instructionsButton, mouse)) {
@@ -199,8 +202,11 @@ public class MainMenu {
     }
 
     // placeholder 
-    private void startGame() {
-        //
+    private void clickStartGame() {
+        app.startGame();
+        app.getInputManager().removeListener(actionListener);
+        disappear();
+
     }
 
     private void openSettings() {

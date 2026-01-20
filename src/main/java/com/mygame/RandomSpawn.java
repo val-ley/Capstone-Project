@@ -1,64 +1,55 @@
 package com.mygame;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Node;
-import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.shape.Box;
 
 public class RandomSpawn {
 
-    private final AssetManager assetManager;
+    private final SimpleApplication app;
     private final Node rootNode;
-    private final BulletAppState physics;
+    private final AssetManager assetManager;
 
-    // Predefined spawn points
     private final Vector3f[] spawnPoints = {
-        new Vector3f(0, 5, 0),
-        new Vector3f(5, 5, 5),
-        new Vector3f(-5, 5, 10),
-        new Vector3f(10, 5, -5)
+        new Vector3f(0, 1, -5),
+        new Vector3f(2, 1, -5),
+        new Vector3f(-2, 1, -5),
+        new Vector3f(0, 1, -8)
     };
-    
-    public RandomSpawn(AssetManager assetManager, Node rootNode, BulletAppState physics) {
-        this.assetManager = assetManager;
-        this.rootNode = rootNode;
-        this.physics = physics;
+
+    private int i = 0; 
+    private float timer = 0; 
+    private Spatial currentCircle = null; 
+    private final float displayTime = 5f; 
+
+    public RandomSpawn(SimpleApplication app) {
+        this.app = app;
+        this.rootNode = app.getRootNode();
+        this.assetManager = app.getAssetManager();
     }
 
-    public void createRandomSpawn() {
-        // Pick a random spawn point
-        //Vector3f point = spawnPoints[(int) (Math.random() * spawnPoints.length)];
+    public void update(float tpf) {
+        timer += tpf;
 
-        // Create circle
-        Spatial circle = assetManager.loadModel("Models/circle-3d.glb");
-        rootNode.attachChild(circle);
-
-        circle.setLocalTranslation(-2f, -2f, -2f);
-
-        // Remove cube after 5 seconds
-        circle.addControl(new AbstractControl() {
-            float timeLeft = 5f;
-
-            @Override
-            protected void controlUpdate(float tpf) {
-                timeLeft -= tpf;
-                if (timeLeft <= 0f) {
-                    spatial.removeFromParent();
-                }
+        if (timer >= displayTime) {
+            if (currentCircle != null) {
+                rootNode.detachChild(currentCircle);
             }
 
-            @Override
-            protected void controlRender(com.jme3.renderer.RenderManager rm,  com.jme3.renderer.ViewPort vp) {
+            currentCircle = assetManager.loadModel("Models/circle-3d.glb");
+            currentCircle.setLocalScale(5f);
+            currentCircle.setLocalTranslation(spawnPoints[i]);
+            rootNode.attachChild(currentCircle);
+
+            // move to the next spawn point
+            i++;
+            if (i >= spawnPoints.length) {
+                i = 0; // loop back to start, not random but it works
             }
-        });
 
-        rootNode.attachChild(circle);
-
-        new Collision(circle, physics, 0);
+            timer = 0; 
+        }
     }
 }

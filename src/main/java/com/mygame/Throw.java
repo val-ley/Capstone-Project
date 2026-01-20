@@ -25,14 +25,11 @@ public class Throw {
     }
 
     public void throwBox(Camera cam) {
-
     Spatial box = assetManager.loadModel("Models/deliverybox-sprytile.glb");
+    box.setName("box");
 
-    // --- MATERIAL ---
-    Material mat = new Material(
-        assetManager,
-        "Common/MatDefs/Light/Lighting.j3md"
-    );
+    // MATERIAL
+    Material mat = new Material( assetManager, "Common/MatDefs/Light/Lighting.j3md" );
 
     Texture tex = assetManager.loadTexture("Textures/deliverybox-texture.png");
     mat.setTexture("DiffuseMap", tex);
@@ -51,13 +48,11 @@ public class Throw {
     });
 
     // Spawn position
-    Vector3f spawnPos = cam.getLocation()
-            .add(cam.getDirection().mult(1.2f));
+    Vector3f spawnPos = cam.getLocation() .add(cam.getDirection().mult(1.2f));
     box.setLocalTranslation(spawnPos);
 
     // Physics
-    BoxCollisionShape shape =
-            new BoxCollisionShape(new Vector3f(0.25f, 0.25f, 0.25f));
+    BoxCollisionShape shape = new BoxCollisionShape(new Vector3f(0.25f, 0.25f, 0.25f));
     RigidBodyControl physics = new RigidBodyControl(shape, 1f);
     box.addControl(physics);
 
@@ -66,6 +61,4 @@ public class Throw {
 
     physics.setLinearVelocity(cam.getDirection().mult(20f));
 }
-
-
 }

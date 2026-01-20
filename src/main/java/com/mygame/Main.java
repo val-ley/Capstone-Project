@@ -1,5 +1,6 @@
 package com.mygame;
 
+import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -19,14 +20,17 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
+import java.util.concurrent.Callable;
 
 public class Main extends SimpleApplication implements ActionListener {
     
     private MainMenu mainMenu;
     public boolean hideMenu;
-    
+    private boolean gameRunning = false;
+        
     private Throw throwBox;
     
+    private Timer timer;
     public boolean returnHideMenu () {
         return hideMenu;
     }
@@ -36,6 +40,9 @@ public class Main extends SimpleApplication implements ActionListener {
 
     private boolean left, right, up, down, jump;
     private final Vector3f walkDir = new Vector3f();
+    
+    private RandomSpawn spawner;
+    
 
     public static void main(String[] args) {
         new Main().start();
@@ -47,14 +54,14 @@ public class Main extends SimpleApplication implements ActionListener {
         physics = new BulletAppState();
         stateManager.attach(physics); //create this before attaching the cube
                 
-        RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
+        //RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
         
-        RandomSpawn.createRandomSpawn();
+        //RandomSpawn.createRandomSpawn();
 
-        flyCam.setMoveSpeed(10);
+        flyCam.setMoveSpeed(30);
         setupKeys();
 
-       //createFloor();
+       createFloor();
        createPlayer();
         
         //test();
@@ -64,12 +71,16 @@ public class Main extends SimpleApplication implements ActionListener {
         
         //throwing box 
         throwBox = new Throw(assetManager, rootNode, physics);
+        
+        timer = new Timer(this, guiNode);
+        
+        spawner = new RandomSpawn(this);
     }
     //  FLOOR 
     private void createFloor() {
      Spatial city = assetManager.loadModel("Scenes/houseblock.glb");
         
-        city.setLocalTranslation(0, -1, 0);
+        city.setLocalTranslation(0, -2, 0);
         rootNode.attachChild(city);
 
         DirectionalLight sun = new DirectionalLight();
@@ -93,19 +104,38 @@ public class Main extends SimpleApplication implements ActionListener {
         new Collision(city, physics, 0); 
 }
     
+    public void randomSpawn() {
+
+        Vector3f[] spawnPoints = {
+        new Vector3f(0, 1, -5),
+        new Vector3f(2, 1, -5),
+        new Vector3f(-2, 1, -5),
+        new Vector3f(0, 1, -8)
+    };
+
+       for (int i = 0; i < spawnPoints.length; i++) {
+        Spatial circle = assetManager.loadModel("Models/circle-3d.glb");
+        circle.setLocalTranslation(spawnPoints[i]);
+        rootNode.attachChild(circle);
+    }
+
+
+}
+
+    
     //  PLAYER HITBOX
     private void createPlayer() {
-    CapsuleCollisionShape shape = new CapsuleCollisionShape(0.5f, 1.8f);
+    CapsuleCollisionShape shape = new CapsuleCollisionShape(0.5f, 3f);
 
     player = new CharacterControl(shape, 0.05f);
-    player.setGravity(10);
-    player.setJumpSpeed(5);
+    player.setGravity(15);
+    player.setJumpSpeed(10);
 
     Node playerNode = new Node("Player");
     playerNode.addControl(player);
     rootNode.attachChild(playerNode);
 
-    player.setPhysicsLocation(new Vector3f(1, 1, 0));
+    player.setPhysicsLocation(new Vector3f(1, 1, -5));
     physics.getPhysicsSpace().add(player);
 }
     //  INPUT 
@@ -124,6 +154,8 @@ public class Main extends SimpleApplication implements ActionListener {
         inputManager.addListener(this, "Left", "Right", "Up", "Down", "Jump", "MenuStart", "Throw");
     }
     
+    
+    
     @Override
     public void onAction(String name, boolean pressed, float tpf) {
         if (name.equals("Left"))  left  = pressed;
@@ -134,12 +166,14 @@ public class Main extends SimpleApplication implements ActionListener {
         
         if (name.equals("MenuStart") && pressed) {
             mainMenu.disappear();
+            startGame();
         }
         //box throw
         if (name.equals("Throw") && pressed) {
             throwBox.throwBox(cam);
         }
     }
+    
     
     // REFRESH
     @Override
@@ -157,5 +191,25 @@ public class Main extends SimpleApplication implements ActionListener {
         player.setWalkDirection(walkDir.mult(0.3f));
 
         cam.setLocation(player.getPhysicsLocation().add(0, 1.5f, 0));
+        
+        if (gameRunning && timer != null) {
+        timer.update(tpf);
+        
+        //updating the spawn location
+        spawner.update(tpf);
     }
+
+    }
+    
+    
+    public void startGame() {
+        gameRunning = true;
+    }
+
+    public void stopGame() {
+        gameRunning = false;
+    }
+    
+    
 }
+
