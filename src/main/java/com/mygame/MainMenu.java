@@ -24,6 +24,10 @@ public class MainMenu {
     private Picture playButton;
     private Picture settingsButton;
     private Picture instructionsButton;
+    
+    //Title
+    private Picture Title;
+
 
     //for city spinning image
     private Picture cityspin;
@@ -50,7 +54,7 @@ public class MainMenu {
         cityspin = new Picture("cityspin");
         cityspin.setImage(app.getAssetManager(), "Interface/city-spin.png", true);
 
-        float cityspinsize = w*1.5f;
+        float cityspinsize = w*6f;
         cityspin.setWidth(cityspinsize);
         cityspin.setHeight(cityspinsize);
 
@@ -75,6 +79,7 @@ public class MainMenu {
 
         /////////////////////////////////////////////////////////////
 
+        
         ///////////////////////BUTTONS///////////////////////////////
         
         //create buttons as Pictures
@@ -85,26 +90,36 @@ public class MainMenu {
         playButton.setImage(app.getAssetManager(), "Interface/Buttons/start.png", true);
         playButton.setWidth(buttonWidth);
         playButton.setHeight(buttonHeight);
-        playButton.setPosition(w/6f - 100, h*0.42f);
+        playButton.setPosition(w/5f - 100, h*0.42f);
         guiNode.attachChild(playButton);
 
         settingsButton = new Picture("settingsBtn");
         settingsButton.setImage(app.getAssetManager(), "Interface/Buttons/settings.png", true);
         settingsButton.setWidth(buttonWidth);
         settingsButton.setHeight(buttonHeight);
-        settingsButton.setPosition(w/6f - 100, h*0.3f);
+        settingsButton.setPosition(w/5f - 100, h*0.3f);
         guiNode.attachChild(settingsButton);
 
         instructionsButton = new Picture("instructionsBtn");
         instructionsButton.setImage(app.getAssetManager(), "Interface/Buttons/instructions.png", true);
         instructionsButton.setWidth(buttonWidth);
         instructionsButton.setHeight(buttonHeight);
-        instructionsButton.setPosition(w/6f - 100, h*0.18f);
+        instructionsButton.setPosition(w/5f - 100, h*0.18f);
         guiNode.attachChild(instructionsButton);
 
+        
+        
+        Title = new Picture("Title");
+        Title.setImage(app.getAssetManager(), "Interface/title.png", true);
+        Title.setWidth(250);
+        Title.setHeight(150);
+        Title.setPosition(w/5f - 100, h*0.6f);
+        guiNode.attachChild(Title);
+        
         initKeys();
 
         ///////////////////////////////////////////////////////////////
+        
     }
 
     /////////////////////////// BUTTONS ///////////////////////////////
@@ -148,18 +163,20 @@ public class MainMenu {
         background = new Geometry("MenuBG", new Quad(w, h));
 
         Material mat = new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", new ColorRGBA(143f, 183f, 219f, 20f)); 
+        mat.setColor("Color", new ColorRGBA(144f / 255f,184f / 255f,219f / 255f,1f)); //rgb(144 184 219)
+
 
         background.setMaterial(mat);
         guiNode.attachChild(background);
     }
-
    
     public void disappear() {
         background.addControl(fadeOut());
-        title.addControl(fadeOut());
-        start.addControl(fadeOut());
-        quit.addControl(fadeOut());
+        playButton.addControl(fadeOut());
+        settingsButton.addControl(fadeOut());
+        instructionsButton.addControl(fadeOut());
+        cityspin.addControl(fadeOut());
+        Title.addControl(fadeOut());
     }
 
     private AbstractControl fadeOut() {

@@ -54,7 +54,7 @@ public class Main extends SimpleApplication implements ActionListener {
         flyCam.setMoveSpeed(10);
         setupKeys();
 
-       createFloor();
+       //createFloor();
        createPlayer();
         
         //test();
@@ -64,15 +64,9 @@ public class Main extends SimpleApplication implements ActionListener {
         
         //throwing box 
         throwBox = new Throw(assetManager, rootNode, physics);
-        
-        
     }
-    
-
     //  FLOOR 
     private void createFloor() {
-        
-        //////// //////// //////// //////// ////////
      Spatial city = assetManager.loadModel("Scenes/houseblock.glb");
         
         city.setLocalTranslation(0, -1, 0);
@@ -98,16 +92,13 @@ public class Main extends SimpleApplication implements ActionListener {
         
         new Collision(city, physics, 0); 
 }
-
-   
-
+    
     //  PLAYER HITBOX
     private void createPlayer() {
-    CapsuleCollisionShape shape =
-            new CapsuleCollisionShape(0.5f, 1.8f);
+    CapsuleCollisionShape shape = new CapsuleCollisionShape(0.5f, 1.8f);
 
     player = new CharacterControl(shape, 0.05f);
-    player.setGravity(0);
+    player.setGravity(10);
     player.setJumpSpeed(5);
 
     Node playerNode = new Node("Player");
@@ -116,53 +107,38 @@ public class Main extends SimpleApplication implements ActionListener {
 
     player.setPhysicsLocation(new Vector3f(1, 1, 0));
     physics.getPhysicsSpace().add(player);
-    
-   
 }
-
-
-
     //  INPUT 
     private void setupKeys() {
+        //Movement
         inputManager.addMapping("Left",  new KeyTrigger(KeyInput.KEY_A));
         inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("Up",    new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Down",  new KeyTrigger(KeyInput.KEY_S));
         inputManager.addMapping("Jump",  new KeyTrigger(KeyInput.KEY_SPACE));
-        
+        //Main Menu
         inputManager.addMapping("MenuStart", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addListener(this, "MenuStart");
-        
+        //Actions
         inputManager.addMapping("Throw", new KeyTrigger(KeyInput.KEY_E));
-        inputManager.addListener(this, "Throw");
        
-        inputManager.addListener(this,
-                "Left", "Right", "Up", "Down", "Jump");
+        inputManager.addListener(this, "Left", "Right", "Up", "Down", "Jump", "MenuStart", "Throw");
     }
     
-    
-
     @Override
     public void onAction(String name, boolean pressed, float tpf) {
         if (name.equals("Left"))  left  = pressed;
         if (name.equals("Right")) right = pressed;
         if (name.equals("Up"))    up    = pressed;
         if (name.equals("Down"))  down  = pressed;
-
         if (name.equals("Jump")) jump = pressed;
         
-        
-        //start of the game
         if (name.equals("MenuStart") && pressed) {
             mainMenu.disappear();
-            hideMenu = true;
         }
-        
         //box throw
         if (name.equals("Throw") && pressed) {
             throwBox.throwBox(cam);
         }
-
     }
     
     // REFRESH
@@ -177,11 +153,9 @@ public class Main extends SimpleApplication implements ActionListener {
         if (down)  walkDir.addLocal(cam.getDirection().negate());
         if (jump) player.jump();
        
-
         walkDir.y = 0;
         player.setWalkDirection(walkDir.mult(0.3f));
 
         cam.setLocation(player.getPhysicsLocation().add(0, 1.5f, 0));
-        
     }
 }
