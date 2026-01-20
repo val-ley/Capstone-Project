@@ -5,172 +5,192 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.shape.Quad;
-
-/*
-  SimMAIN MNU WHICH LATER WILL HAVE SETTING SHOPEFULLY
-*/
+import com.jme3.ui.Picture;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.controls.ActionListener;
 
 public class MainMenu {
 
     private final SimpleApplication app;
     private final Node guiNode;
 
-    private Geometry background;
-    private BitmapText title;
-    private BitmapText start;
-    private BitmapText quit;
+    //for buttons
+    private Picture playButton;
+    private Picture settingsButton;
+    private Picture instructionsButton;
 
-    private ColorRGBA bgColor = ColorRGBA.Black; // init bg color
-    private boolean colorChanged = false;
+    //for city spinning image
+    private Picture cityspin;
+
+    private Geometry background;
+    private BitmapText title, start, quit;
 
     public MainMenu(SimpleApplication app) {
         this.app = app;
         this.guiNode = app.getGuiNode();
     }
-    
-    //ON OFF MAKE LATER CAUSE THATS REALLY LONG TO USE
 
-//    background.addControl(new AbstractControl() {
-//
-//            float timeLeft = 2f; // seconds
-//
-//            @Override
-//            protected void controlUpdate(float tpf) {
-//                timeLeft -= tpf;
-//
-//                if (timeLeft <= 0f) {
-//                    spatial.removeFromParent();
-//                }
-//            }
-//
-//            @Override
-//            protected void controlRender(
-//                    com.jme3.renderer.RenderManager rm,
-//                    com.jme3.renderer.ViewPort vp) {
-//                // Not used
-//            }
-//        });
-
-    
-    //  INIT MENU 
     public void init() {
-        float width = app.getCamera().getWidth();
-        float height = app.getCamera().getHeight();
+        float w = app.getCamera().getWidth();
+        float h = app.getCamera().getHeight();
 
-        // BG
-        Quad quad = new Quad(width, height);
-        background = new Geometry("MenuBackground", quad);
+        createBackground(w, h);
 
-        Material mat = new Material(app.getAssetManager(),
-                "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", bgColor);
-        background.setMaterial(mat);
+        ///////////////////////CITY LOOP ANIMATION///////////////////////////////
+        //node for city loop
+        Node cityTurn = new Node("cityTurn");
+
+        //city loop + animations 
+        cityspin = new Picture("cityspin");
+        cityspin.setImage(app.getAssetManager(), "Interface/city-spin.png", true);
+
+        float cityspinsize = w*1.5f;
+        cityspin.setWidth(cityspinsize);
+        cityspin.setHeight(cityspinsize);
+
+        // turn axle cityspin around its center
+        cityspin.setPosition(-cityspinsize/2f, -cityspinsize/2f);
+        float x = w; // turn axle is on screen
+        float y = 0;
+        cityTurn.setLocalTranslation(x, y, 0);
+
+        cityTurn.attachChild(cityspin);
+        guiNode.attachChild(cityTurn);
+
+        cityTurn.addControl(new AbstractControl() {
+            @Override
+            protected void controlUpdate(float tpf) {
+                spatial.rotate(0, 0, tpf/4); 
+            }
+
+            @Override
+            protected void controlRender(com.jme3.renderer.RenderManager rm, com.jme3.renderer.ViewPort vp) {}
+        });
+
+        /////////////////////////////////////////////////////////////
+
+        ///////////////////////BUTTONS///////////////////////////////
         
-        guiNode.attachChild(background);
-
-        // JUST A  AFONT VAR
-        BitmapFont font = app.getAssetManager()
-                .loadFont("Interface/Fonts/Default.fnt"); //either do a png or choose a nicer font later on
-
-        // THE TITLE
-        title = new BitmapText(font); //in jmonkey tut
-        title.setText("DELIVERY GAME");
-        title.setSize(font.getCharSet().getRenderedSize() * 4f); //size, idk how to upscale tho
-        title.setColor(ColorRGBA.White);
+        //create buttons as Pictures
         
+        float buttonHeight = 50f;
+        float buttonWidth = 200;
+        playButton = new Picture("playBtn");
+        playButton.setImage(app.getAssetManager(), "Interface/Buttons/start.png", true);
+        playButton.setWidth(buttonWidth);
+        playButton.setHeight(buttonHeight);
+        playButton.setPosition(w/6f - 100, h*0.42f);
+        guiNode.attachChild(playButton);
 
-        centerText(title, width, height * 0.65f); //so its a bit lower
-        guiNode.attachChild(title);
+        settingsButton = new Picture("settingsBtn");
+        settingsButton.setImage(app.getAssetManager(), "Interface/Buttons/settings.png", true);
+        settingsButton.setWidth(buttonWidth);
+        settingsButton.setHeight(buttonHeight);
+        settingsButton.setPosition(w/6f - 100, h*0.3f);
+        guiNode.attachChild(settingsButton);
 
-        // START
-        start = new BitmapText(font);
-        start.setText("Press ENTER to Start Game");
-        start.setSize(font.getCharSet().getRenderedSize() * 1.5f);
-        start.setColor(ColorRGBA.White);
-        
-        centerText(start, width, height * 0.45f); //weird way to control it but it works
-        guiNode.attachChild(start);
+        instructionsButton = new Picture("instructionsBtn");
+        instructionsButton.setImage(app.getAssetManager(), "Interface/Buttons/instructions.png", true);
+        instructionsButton.setWidth(buttonWidth);
+        instructionsButton.setHeight(buttonHeight);
+        instructionsButton.setPosition(w/6f - 100, h*0.18f);
+        guiNode.attachChild(instructionsButton);
 
-        // QUIT
-        quit = new BitmapText(font);
-        quit.setText("PRESS ESC TO QUIT"); //do these buttons do anything... no, buuut, they will :D
-        quit.setSize(font.getCharSet().getRenderedSize() * 1.2f);
-        quit.setColor(ColorRGBA.Gray);
+        initKeys();
 
-        centerText(quit, width, height * 0.35f);
-        guiNode.attachChild(quit);
+        ///////////////////////////////////////////////////////////////
     }
 
-//    // CHANGE BG COLOR 
-//    public void changeColor(ColorRGBA newColor) {
-//        bgColor = newColor;
-//        background.getMaterial().setColor("Color", bgColor);
-//        colorChanged = true;
-//    }
-
-//    public boolean isColorChanged() {
-//        return colorChanged;
-//    }
-    private void centerText(BitmapText text, float screenWidth, float y) { //lowkey stolen from tutorials
-        float textWidth = text.getLineWidth();
-        text.setLocalTranslation(
-                (screenWidth - textWidth) / 2f, y, 0);
+    /////////////////////////// BUTTONS ///////////////////////////////
+    private void initKeys() {
+        app.getInputManager().addMapping("Click", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+        app.getInputManager().addListener(actionListener, "Click");
     }
-    //SCREEN GOES TRANSPARENT --> cop out cause i cant find how to just remove the guiNode.attachChild(something);
-    private AbstractControl makeDisappearControl() {
-    return new AbstractControl() {
 
-        float timeLeft = 0.5f;
+    final private ActionListener actionListener = new ActionListener() {
+        @Override
+        public void onAction(String name, boolean keyPressed, float tpf) {
+            if (name.equals("Click") && !keyPressed) { // on release
+                Vector2f mouse = app.getInputManager().getCursorPosition();
 
-        @Override //same from before
-        protected void controlUpdate(float tpf) {
-            timeLeft -= tpf;
-
-            if (timeLeft <= 0f) {
-                spatial.removeFromParent();
-                spatial.removeControl(this);
+                //check each button
+                if (isMouseOverButton(playButton, mouse)) {
+                    startGame();
+                } else if (isMouseOverButton(settingsButton, mouse)) {
+                    openSettings();
+                } else if (isMouseOverButton(instructionsButton, mouse)) {
+                    openInstructions();
+                }
             }
         }
-
-        @Override
-        protected void controlRender(
-                com.jme3.renderer.RenderManager rm,
-                com.jme3.renderer.ViewPort vp) {}
     };
-}
 
-public void disappear() {
+    //
+    private boolean isMouseOverButton(Picture button, Vector2f mouse) {
+        float x = button.getLocalTranslation().x;
+        float y = button.getLocalTranslation().y;
+        float w = button.getWidth();
+        float h = button.getHeight();
 
-    // background fade
-    background.addControl(new AbstractControl() {
+        return mouse.x >= x && mouse.x <= x + w &&
+               mouse.y >= y && mouse.y <= y + h;
+    }
 
-        float timeLeft = 0.5f;
+    ////////////////////////////////////////////////////////////////////////
 
-        @Override
-        protected void controlUpdate(float tpf) {
-            timeLeft -= tpf;
+    private void createBackground(float w, float h) {
+        background = new Geometry("MenuBG", new Quad(w, h));
 
-            if (timeLeft <= 0f) {
-                spatial.removeFromParent();
-                spatial.removeControl(this);
+        Material mat = new Material(app.getAssetManager(),"Common/MatDefs/Misc/Unshaded.j3md");
+        mat.setColor("Color", new ColorRGBA(143f, 183f, 219f, 20f)); 
+
+        background.setMaterial(mat);
+        guiNode.attachChild(background);
+    }
+
+   
+    public void disappear() {
+        background.addControl(fadeOut());
+        title.addControl(fadeOut());
+        start.addControl(fadeOut());
+        quit.addControl(fadeOut());
+    }
+
+    private AbstractControl fadeOut() {
+        return new AbstractControl() {
+
+            float time = 0.5f;
+
+            @Override
+            protected void controlUpdate(float tpf) {
+                time -= tpf;
+                if (time <= 0f) {
+                    spatial.removeFromParent();
+                    spatial.removeControl(this);
+                }
             }
-        }
 
-        @Override
-        protected void controlRender(
-                com.jme3.renderer.RenderManager rm,
-                com.jme3.renderer.ViewPort vp) { }
-    });
+            @Override
+            protected void controlRender( com.jme3.renderer.RenderManager rm, com.jme3.renderer.ViewPort vp) {}
+        };
+    }
 
-    // title
-    title.addControl(makeDisappearControl());
-    start.addControl(makeDisappearControl());
-    quit.addControl(makeDisappearControl());
-}
+    // placeholder 
+    private void startGame() {
+        //
+    }
 
-    
+    private void openSettings() {
+        // 
+    }
+
+    private void openInstructions() {
+        // 
+    }
 }

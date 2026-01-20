@@ -51,10 +51,10 @@ public class Main extends SimpleApplication implements ActionListener {
         
         RandomSpawn.createRandomSpawn();
 
-        flyCam.setMoveSpeed(1);
+        flyCam.setMoveSpeed(10);
         setupKeys();
 
-        createFloor();
+       createFloor();
        createPlayer();
         
         //test();
@@ -68,24 +68,9 @@ public class Main extends SimpleApplication implements ActionListener {
         
     }
     
-    //  TEST 
-//   private void test() {
-//        Spatial boxtest = assetManager.loadModel("Models/deliverybox.glb");
-//        Material mat_default = new Material( assetManager, "Common/MatDefs/Misc/ShowNormals.j3md");
-//        boxtest.setMaterial(mat_default);
-//        rootNode.attachChild(boxtest);
-//    }
 
     //  FLOOR 
     private void createFloor() {
-         //////// //////// //////// //////// ////////
-//        Box floor = new Box(100, 1, 100); // create cube shape
-//        Geometry floors = new Geometry("Floor", floor);  // create cube geometry from the shape
-//        Material mat = new Material(assetManager,
-//          "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-//        mat.setColor("Color", ColorRGBA.White);   // set color of material to blue
-//        floors.setMaterial(mat);                   // set the cube's material
-//        rootNode.attachChild(floors);              //
         
         //////// //////// //////// //////// ////////
      Spatial city = assetManager.loadModel("Scenes/houseblock.glb");
@@ -122,7 +107,7 @@ public class Main extends SimpleApplication implements ActionListener {
             new CapsuleCollisionShape(0.5f, 1.8f);
 
     player = new CharacterControl(shape, 0.05f);
-    player.setGravity(10);
+    player.setGravity(0);
     player.setJumpSpeed(5);
 
     Node playerNode = new Node("Player");
@@ -150,8 +135,7 @@ public class Main extends SimpleApplication implements ActionListener {
         
         inputManager.addMapping("Throw", new KeyTrigger(KeyInput.KEY_E));
         inputManager.addListener(this, "Throw");
-
-
+       
         inputManager.addListener(this,
                 "Left", "Right", "Up", "Down", "Jump");
     }

@@ -32,13 +32,13 @@ public class RandomSpawn {
 
     public void createRandomSpawn() {
         // Pick a random spawn point
-        Vector3f point = spawnPoints[(int) (Math.random() * spawnPoints.length)];
+        //Vector3f point = spawnPoints[(int) (Math.random() * spawnPoints.length)];
 
-        // Create cube
+        // Create circle
         Spatial circle = assetManager.loadModel("Models/circle-3d.glb");
         rootNode.attachChild(circle);
 
-        circle.setLocalTranslation(0.0f, 0.0f, 0.0f);
+        circle.setLocalTranslation(-2f, -2f, -2f);
 
         // Remove cube after 5 seconds
         circle.addControl(new AbstractControl() {
@@ -60,6 +60,6 @@ public class RandomSpawn {
 
         rootNode.attachChild(circle);
 
-        new Collision(circle, physics, 1);
+        new Collision(circle, physics, 0);
     }
 }
