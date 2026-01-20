@@ -7,7 +7,7 @@ import com.jme3.scene.Node;
 
 public class Timer {
 
-    private float time = 180f; // 3 minutes in seconds
+    private float time = 180f;
     private final BitmapText timerText;
 
     public Timer(SimpleApplication app, Node guiNode) {
@@ -21,12 +21,12 @@ public class Timer {
     public void update(float tpf) {
         if (time > 0) {
             time -= tpf; // count down
-            if (time < 0) time = 0; // prevent negative
+            if (time < 0) time = 0; //stop if under 0
             timerText.setText(formatTime(time));
         }
     }
 
-    // Helper to format time as MM:SS
+    // formatting
     private String formatTime(float seconds) {
         int mins = (int) (seconds / 60);
         int secs = (int) (seconds % 60);

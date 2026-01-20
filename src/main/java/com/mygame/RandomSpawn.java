@@ -40,6 +40,8 @@ public class RandomSpawn {
 
             currentCircle = assetManager.loadModel("Models/circle-3d.glb");
             currentCircle.setLocalScale(5f);
+            currentCircle.setName("target");
+
             currentCircle.setLocalTranslation(spawnPoints[i]);
             rootNode.attachChild(currentCircle);
 

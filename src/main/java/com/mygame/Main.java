@@ -21,8 +21,12 @@ import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.concurrent.Callable;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 
-public class Main extends SimpleApplication implements ActionListener {
+public class Main extends SimpleApplication implements ActionListener, PhysicsCollisionListener {
     
     private MainMenu mainMenu;
     public boolean hideMenu;
@@ -43,39 +47,44 @@ public class Main extends SimpleApplication implements ActionListener {
     
     private RandomSpawn spawner;
     
+    private BitmapText scoreBitmapText;
+    private int score = 0;
+
+
+    
 
     public static void main(String[] args) {
         new Main().start();
     }
 
     @Override
-    public void simpleInitApp() {
+public void simpleInitApp() {
 
-        physics = new BulletAppState();
-        stateManager.attach(physics); //create this before attaching the cube
-                
-        //RandomSpawn RandomSpawn = new RandomSpawn(assetManager, rootNode, physics);
-        
-        //RandomSpawn.createRandomSpawn();
+    // physics 
+    physics = new BulletAppState();
+    stateManager.attach(physics);
 
-        flyCam.setMoveSpeed(30);
-        setupKeys();
+    //  collision listener
+    physics.getPhysicsSpace().addCollisionListener(this);
 
-       createFloor();
-       createPlayer();
-        
-        //test();
-        //Main menu stuff
-        mainMenu = new MainMenu(this);
-        mainMenu.init();
-        
-        //throwing box 
-        throwBox = new Throw(assetManager, rootNode, physics);
-        
-        timer = new Timer(this, guiNode);
-        
-        spawner = new RandomSpawn(this);
-    }
+    flyCam.setMoveSpeed(30);
+    setupKeys();
+
+    //  player and floor
+    createPlayer();
+    createFloor();
+
+    // menu
+    mainMenu = new MainMenu(this);
+    mainMenu.init();
+
+    //  box throwing
+    throwBox = new Throw(assetManager, rootNode, physics);
+    
+    timer = new Timer(this, guiNode);
+    spawner = new RandomSpawn(this);
+}
+
     //  FLOOR 
     private void createFloor() {
      Spatial city = assetManager.loadModel("Scenes/houseblock.glb");
@@ -138,6 +147,41 @@ public class Main extends SimpleApplication implements ActionListener {
     player.setPhysicsLocation(new Vector3f(1, 1, -5));
     physics.getPhysicsSpace().add(player);
 }
+    
+    ///////////////////collision listener////////////////////////////////////
+    @Override
+    public void collision(PhysicsCollisionEvent event) {
+        
+                BitmapFont font = assetManager.loadFont("Interface/Fonts/Default.fnt");
+        scoreBitmapText = new BitmapText(font, false);
+        scoreBitmapText.setSize(font.getCharSet().getRenderedSize());
+        scoreBitmapText.setText("Score: 0");
+        scoreBitmapText.setLocalTranslation(10, cam.getHeight() - 10, 0);
+        guiNode.attachChild(scoreBitmapText);
+        
+        Spatial a = event.getNodeA();
+        Spatial b = event.getNodeB();
+
+        if ((a != null && a.getName() != null && a.getName().equals("box") &&
+             b != null && b.getName() != null && b.getName().equals("target")) ||
+            (b != null && b.getName() != null && b.getName().equals("box") &&
+             a != null && a.getName() != null && a.getName().equals("target"))) {
+
+            score++;
+            System.out.println("Point scored! Total: " + score);
+
+            // Update GUI
+            scoreBitmapText.setText("Score: " + score);
+
+            // Remove target
+            if (a.getName().equals("target")) {
+                rootNode.detachChild(a);
+            } else {
+                rootNode.detachChild(b);
+            }
+        }
+    }
+
     //  INPUT 
     private void setupKeys() {
         //Movement
@@ -196,9 +240,13 @@ public class Main extends SimpleApplication implements ActionListener {
         timer.update(tpf);
         
         //updating the spawn location
-        spawner.update(tpf);
-    }
+        if (gameRunning && timer != null) {
+                timer.update(tpf);
+                spawner.update(tpf);
+            }
 
+
+        }
     }
     
     
